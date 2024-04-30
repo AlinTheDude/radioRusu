@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
+    "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
     "core-js": "^3.8.3",
+    "hls.js": "^1.5.8",
     "vue": "^3.2.13",
     "vue-hls-video-player": "^1.0.1",
     "vue-router": "^4.0.3",

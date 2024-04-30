@@ -1,33 +1,33 @@
 <template>
   <v-container>
-     <h1 class="title">Rusu Radio Browser</h1>
-     <div v-if="radios.length">
-       <h2>Radio Stations</h2>
-       <v-row>
-         <v-col cols="12" sm="6" md="4" lg="3" v-for="radio in radios" :key="radio.stationuuid">
-           <v-card class="mx-auto" max-width="400" hover dark elevation="10">
-             <v-img :src="radio.favicon || require('@/assets/radioImg.jpg')" aspect-ratio="1.75" class="white--text">
-               <v-card-title class="fill-height align-end" v-text="radio.name"></v-card-title>
-             </v-img>
-             <v-card-actions>
-               <v-btn color="orange" dark @click="playRadio(radio.url)">
-                 <svg-icon type="mdi" :path="mdiPlay"></svg-icon> <!-- Play icon -->
-               </v-btn>
-               <v-btn color="pink" dark @click="addToFavorites(radio)">
-                 <svg-icon type="mdi" :path="mdiHeart"></svg-icon> <!-- Heart icon for favorites -->
-               </v-btn>
-               <!-- Assuming you want a pause button as well -->
-               <v-btn color="red" dark @click="pauseRadio(radio.url)">
-                 <svg-icon type="mdi" :path="mdiPause"></svg-icon> <!-- Pause icon -->
-               </v-btn>
-             </v-card-actions>
-           </v-card>
-         </v-col>
-       </v-row>
-     </div>
-     <div v-else>
-       <p>Loading radio stations...</p>
-     </div>
+      <h1 class="title">Rusu Radio Browser</h1>
+      <div v-if="radios.length">
+        <h2>Radio Stations</h2>
+        <v-row>
+          <v-col cols="12" sm="6" md="4" lg="3" v-for="radio in radios" :key="radio.stationuuid">
+            <v-card class="mx-auto" max-width="400" hover dark elevation="10">
+              <v-img :src="radio.favicon || require('@/assets/radioImg.jpg')" aspect-ratio="1.75" class="white--text">
+                <v-card-title class="fill-height align-end" v-text="radio.name"></v-card-title>
+              </v-img>
+              <v-card-actions>
+                <v-btn color="orange" dark @click="playRadio(radio.url)">
+                  <svg-icon type="mdi" :path="mdiPlay"></svg-icon> <!-- Play icon -->
+                </v-btn>
+                <v-btn color="pink" dark @click="addToFavorites(radio)">
+                  <svg-icon type="mdi" :path="mdiHeart"></svg-icon> <!-- Heart icon for favorites -->
+                </v-btn>
+                <!-- Assuming you want a pause button as well -->
+                <v-btn color="red" dark @click="pauseRadio">
+                  <svg-icon type="mdi" :path="mdiPause"></svg-icon> <!-- Pause icon -->
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+      <div v-else>
+        <p>Loading radio stations...</p>
+      </div>
   </v-container>
  </template>
  
@@ -46,7 +46,9 @@
        mdiPlay,
        mdiPause,
        mdiHeart,
-     }
+       currentAudio: null, // Reference to the currently playing audio
+       favorites: [], // Array to store favorite radio stations
+     };
   },
   methods: {
      getRadios() {
@@ -58,22 +60,26 @@
          });
      },
      playRadio(url) {
-       // Implement your logic to play the radio station
+       this.currentAudio = new Audio(url);
+       this.currentAudio.play();
        console.log('Playing radio:', url);
      },
-     pauseRadio(url) {
-       // Implement your logic to pause the radio station
-       console.log('Pausing radio:', url);
+     pauseRadio() {
+       if (this.currentAudio) {
+         this.currentAudio.pause();
+         console.log('Pausing radio');
+       }
      },
      addToFavorites(radio) {
-       // Implement your logic to add the radio station to favorites
+       this.favorites.push(radio);
+       // Optionally, save favorites to local storage or a backend
        console.log('Adding to favorites:', radio.name);
      },
   },
   created() {
      this.getRadios();
   },
- }
+ };
  </script>
  
  <style scoped>
@@ -109,3 +115,4 @@
   margin-top: 10px;
  }
  </style>
+ 
