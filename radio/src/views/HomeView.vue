@@ -11,11 +11,13 @@
                </v-img>
                <v-card-actions>
                  <v-btn color="orange" dark @click="togglePlayRadio(radio)">
-                  <svg-icon type="mdi" :path="currentPlayingUrl === radio.url ? mdiPause : mdiPlay"></svg-icon>
+                  <svg-icon type="mdi" :path="currentPlayingUrl === radio.url? mdiPause : mdiPlay"></svg-icon>
                  </v-btn>
                  <v-btn color="pink" dark @click="addToFavorites(radio)">
                   <svg-icon type="mdi" :path="mdiHeart"></svg-icon>
                  </v-btn>
+                 <span v-if="currentMediaInfo">{{ currentMediaInfo }}</span>
+                 <span v-else>Podcast is playing</span>
                </v-card-actions>
              </v-card>
            </v-col>
@@ -42,31 +44,33 @@
         mdiPlay,
         mdiPause,
         mdiHeart,
-        currentAudio: null, // Reference to the currently playing audio
-        currentPlayingUrl: null, // New property to track the currently playing radio's URL
-        favorites: [], // Array to store favorite radio stations
+        currentAudio: null,
+        currentPlayingUrl: null,
+        currentMediaInfo: null,
+        favorites: [],
       };
   },
   methods: {
       getRadios() {
         fetch('https://nl1.api.radio-browser.info/json/stations/search?limit=100&countrycode=IT&hidebroken=true&order=clickcount&reverse=true')
-          .then(response => response.json())
-          .then(data => {
+         .then(response => response.json())
+         .then(data => {
             this.radios = data;
             console.log(data);
           });
       },
       togglePlayRadio(radio) {
         if (this.currentPlayingUrl === radio.url) {
-          // If the same radio is playing, pause it
           this.currentAudio.pause();
-          this.currentPlayingUrl = null; // Reset the playing URL
+          this.currentAudio = null;
+          this.currentPlayingUrl = null;
+          this.currentMediaInfo = null;
         } else {
-          // Play the radio
-          const streamUrl = radio.hls === 1 ? radio.url : radio.url;
+          const streamUrl = radio.hls === 1? radio.url : radio.url;
           this.currentAudio = new Audio(streamUrl);
           this.currentAudio.play();
-          this.currentPlayingUrl = radio.url; // Update the playing URL
+          this.currentPlayingUrl = radio.url;
+          this.currentMediaInfo = radio.name;
           console.log('Playing radio:', radio.name);
         }
       },
@@ -83,35 +87,35 @@
  </script>
  
  <style scoped>
-  .title {
-  font-family: '70\'s Disco Personal Use', cursive; /* Updated font */
+ .title {
+  font-family: '70\'s Disco Personal Use', cursive;
   color: #fff;
   text-align: center;
   margin-bottom: 20px;
   }
   
-  .v-card {
+ .v-card {
   margin-bottom: 20px;
   transition: transform 0.3s ease-in-out;
-  background-color: #333; /* Dark background */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Shadow for depth */
+  background-color: #333;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   }
   
-  .v-card:hover {
+ .v-card:hover {
   transform: scale(1.05);
   }
   
-  .v-card-title {
+ .v-card-title {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #fff; /* White text for better contrast */
+  color: #fff;
   }
   
-  .v-card-actions {
+ .v-card-actions {
   justify-content: center;
   }
   
-  .v-btn {
+ .v-btn {
   margin-top: 10px;
   }
  </style>
