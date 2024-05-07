@@ -6,6 +6,17 @@
   <router-view/>
 </template>
 
+<script>
+export default {
+  name: 'App',
+  provide() {
+    return {
+      favorites: [],
+    };
+  },
+};
+</script>
+
 <style>
 #app {
  font-family: 'Roboto Mono', monospace;
