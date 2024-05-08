@@ -27,7 +27,16 @@
       <p>Loading radio stations...</p>
     </div>
   </v-container>
+
+  <!-- Player bar -->
+  <v-bottom-nav v-if="currentPlayingRadio" class="player-bar">
+  <v-btn color="orange" dark @click="togglePlayStop">
+    <v-icon>{{ currentAudio && !currentAudio.paused ? mdiPause : mdiPlay }}</v-icon>
+  </v-btn>
+  <v-btn-text>{{ currentPlayingRadio.name }}</v-btn-text>
+</v-bottom-nav>
 </template>
+
 
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
@@ -52,6 +61,7 @@ export default {
       currentAudio: null,
       currentPlayingUrl: null,
       currentMediaInfo: null,
+      currentPlayingRadio: null, // Make this reactive
       favorites: [],
     };
   },
@@ -65,32 +75,39 @@ export default {
         });
     },
     togglePlayRadio(radio, index) {
-  if (this.currentPlayingUrl === radio.url) {
-    this.currentAudio.pause();
-    this.currentAudio = null;
-    this.currentPlayingUrl = null;
-    this.currentMediaInfoIndex = null; // Reset the currentMediaInfoIndex
-  } else {
-    const streamUrl = radio.hls === 1 ? radio.url : radio.url;
-    this.currentAudio = new Audio(streamUrl);
-    this.currentAudio.play();
-    this.currentPlayingUrl = radio.url;
-    this.currentMediaInfoIndex = index; // Store the index of the currently playing radio
-    console.log('Playing radio:', radio.name);
-  }
-},
+      if (this.currentAudio &&!this.currentAudio.paused) {
+        this.currentAudio.pause();
+        this.currentAudio = null;
+        this.currentPlayingUrl = null;
+        this.currentMediaInfoIndex = null;
+      } else {
+        const streamUrl = radio.hls === 1? radio.url : radio.url;
+        this.currentAudio = new Audio(streamUrl);
+        this.currentAudio.play();
+        this.currentPlayingUrl = radio.url;
+        this.currentPlayingRadio = radio; // Ensure this is updated
+        this.currentMediaInfoIndex = index;
+      }
+    },
     addToFavorites(radio) {
-  radio.favorite = true; // Mark the radio as favorite
-  const favorites = this.radios.filter(r => r.favorite); // Filter only the favorite radios
-  localStorage.setItem('favorites', JSON.stringify(favorites));
-}
+      radio.favorite = true; // Mark the radio as favorite
+      const favorites = this.radios.filter(r => r.favorite); // Filter only the favorite radios
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    },
+    togglePlayStop() {
+      if (this.currentAudio.paused) {
+        this.currentAudio.play();
+      } else {
+        this.currentAudio.pause();
+      }
+    }
   },
   created() {
     this.getRadios();
   },
 };
 </script>
- 
+
 <style scoped>
 .title {
   font-family: '70\'s Disco Personal Use', cursive;
@@ -122,5 +139,31 @@ export default {
 
 .v-btn {
   margin-top: 10px;
+}
+
+.player-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%; /* Center the bar */
+  transform: translateX(-50%); /* Adjust for centering */
+  width: 80%; /* Adjust width */
+  height: 60px; /* Adjust height as needed */
+  background-color: #333; /* Dark background */
+  color: #fff; /* Text color */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.3);
+}
+
+.player-bar .v-btn {
+  margin-left: 10px;
+}
+
+.player-bar .v-icon {
+  margin-left: 10px;
+  font-weight: bold;
+  text-align: right; /* Align text to the right */
 }
 </style>
