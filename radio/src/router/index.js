@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import AboutView from '../views/AboutView.vue';
+import GlobeView from '../views/GlobeView.vue';
+
+
 
 const routes = [
   {
@@ -13,7 +16,11 @@ const routes = [
     name: 'about',
     component: AboutView
   },
-  // Other routes...
+  {
+    path: '/globe',
+    name: 'globe',
+    component: GlobeView
+  },
 ];
 
 const router = createRouter({

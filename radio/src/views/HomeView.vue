@@ -31,7 +31,7 @@
   <!-- Player bar -->
   <v-bottom-nav v-if="currentPlayingRadio" class="player-bar">
   <v-btn color="orange" dark @click="togglePlayStop">
-    {{ currentAudio && !currentAudio.paused ? 'Stop' : 'Play' }}
+    {{ currentAudio && !currentAudio.paused ? "Stop" : "Play" }}
   </v-btn>
   <v-btn-text>{{ currentPlayingRadio.name }}</v-btn-text>
 </v-bottom-nav>
@@ -95,12 +95,12 @@ export default {
       localStorage.setItem('favorites', JSON.stringify(favorites));
     },
     togglePlayStop() {
-      if (this.currentAudio.paused) {
-        this.currentAudio.play();
-      } else {
-        this.currentAudio.pause();
-      }
-    }
+  if (!this.currentAudio.paused) {
+    this.currentAudio.pause();
+  } else {
+    this.currentAudio.play();
+  }
+}
   },
   created() {
     this.getRadios();

@@ -2,6 +2,9 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">Preferiti</router-link> |
+    <router-link to="/globe">Globe</router-link> | <!-- New link for the globe -->
+
+
   </nav>
   <router-view/>
 </template>
