@@ -30,6 +30,9 @@
 
   <!-- Player bar -->
   <v-bottom-nav v-if="currentPlayingRadio" class="player-bar">
+  <div class="sound-wave-animation">
+    <div class="sound-wave-bar"></div>
+  </div>
   <v-btn color="orange" dark @click="togglePlayStop">
     {{ currentAudio && !currentAudio.paused ? "Stop" : "Play" }}
   </v-btn>
@@ -166,5 +169,27 @@ export default {
   margin-left: 10px;
   font-weight: bold;
   text-align: right; /* Align text to the right */
+}
+
+
+.sound-wave-animation {
+  width: 50px; /* Adjust width as needed */
+  height: 40px; /* Adjust height as needed */
+  position: absolute;
+  left: 50%; /* Center horizontally */
+  bottom: 50%; /* Align vertically at the bottom of the player bar */
+  transform: translateX(-50%) translateY(50%);
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%); /* Gradient for sound wave */
+  border-radius: 25px; /* Rounded shape */
+  animation: soundWave 1s infinite alternate; /* Animation */
+}
+
+@keyframes soundWave {
+  0% {
+    height: 40px; /* Initial height */
+  }
+  100% {
+    height: 60px; /* Maximum height */
+  }
 }
 </style>
