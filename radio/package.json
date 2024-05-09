@@ -17,7 +17,7 @@
     "vue": "^3.2.13",
     "vue-hls-video-player": "^1.0.1",
     "vue-router": "^4.0.3",
-    "vuetify": "^3.6.3"
+    "vuetify": "^3.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

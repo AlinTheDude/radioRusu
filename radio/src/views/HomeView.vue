@@ -11,7 +11,7 @@
             </v-img>
             <v-card-actions>
               <v-btn color="orange" dark @click="togglePlayRadio(radio, index)">
-                <svg-icon type="mdi" :path="currentPlayingUrl === radio.url? mdiPause : mdiPlay"></svg-icon>
+                <svg-icon type="mdi" :path="currentPlayingUrl === radio.url ? mdiPause : mdiPlay"></svg-icon>
               </v-btn>
               <v-btn color="pink" dark @click="addToFavorites(radio)">
                 <svg-icon type="mdi" :path="mdiHeart"></svg-icon>
@@ -31,7 +31,7 @@
   <!-- Player bar -->
   <v-bottom-nav v-if="currentPlayingRadio" class="player-bar">
   <v-btn color="orange" dark @click="togglePlayStop">
-    <v-icon>{{ currentAudio && !currentAudio.paused ? mdiPause : mdiPlay }}</v-icon>
+    {{ currentAudio && !currentAudio.paused ? 'Stop' : 'Play' }}
   </v-btn>
   <v-btn-text>{{ currentPlayingRadio.name }}</v-btn-text>
 </v-bottom-nav>
@@ -105,6 +105,7 @@ export default {
   created() {
     this.getRadios();
   },
+  
 };
 </script>
 
