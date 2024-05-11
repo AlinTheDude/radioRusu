@@ -192,4 +192,13 @@ export default {
     height: 60px; /* Maximum height */
   }
 }
+
+.v-dialog .v-card {
+  padding: 20px;
+  text-align: center;
+}
+.v-dialog img {
+  max-width: 200px;
+  margin: auto;
+}
 </style>
