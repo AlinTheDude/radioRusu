@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is the Favorites Page</h1>
+    <h1 class="title">Favorites</h1>
     <div v-if="favorites && favorites.length">
       <h2>Favorite Radio Stations</h2>
       <v-row>
@@ -38,7 +38,7 @@ export default {
   components: {
     SvgIcon
   },
-  inject: ['favorites'], // Inject the favorites array
+  inject: ['favorites'],
   data() {
     return {
       mdiPlay,
@@ -52,44 +52,41 @@ export default {
   },
   methods: {
     togglePlayRadio(radio) {
-  console.log('Toggling play for radio:', radio.name); // Debugging
-  if (this.currentPlayingUrl === radio.url) {
-    if (this.currentAudio) {
-      this.currentAudio.pause();
-    }
-    this.currentAudio = null;
-    this.currentPlayingUrl = null;
-    this.currentMediaInfo = null;
-  } else {
-    const streamUrl = radio.hls === 1 ? radio.url : radio.url;
-    this.currentAudio = new Audio(streamUrl);
-    this.currentAudio.play();
-    this.currentPlayingUrl = radio.url;
-    this.currentMediaInfo = radio.name;
-    console.log('Playing radio:', radio.name);
-  }
+      console.log('Toggling play for radio:', radio.name); // Debugging
+      if (this.currentPlayingUrl === radio.url) {
+        if (this.currentAudio) {
+          this.currentAudio.pause();
+        }
+        this.currentAudio = null;
+        this.currentPlayingUrl = null;
+        this.currentMediaInfo = null;
+      } else {
+        const streamUrl = radio.hls === 1 ? radio.url : radio.url;
+        this.currentAudio = new Audio(streamUrl);
+        this.currentAudio.play();
+        this.currentPlayingUrl = radio.url;
+        this.currentMediaInfo = radio.name;
+        console.log('Playing radio:', radio.name);
+      }
+    },
+    retrieveFavorites() {
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  this.favorites = favorites;
 },
 removeFromFavorites(radio) {
   console.log('Removing from favorites:', radio.name); // Debugging
   const index = this.favorites.findIndex(r => r.stationuuid === radio.stationuuid);
-  if (index !== -1) {
-    this.favorites.splice(index, 1); // Remove from favorites array
-    localStorage.setItem('favorites', JSON.stringify(this.favorites)); // Update local storage
-
-    // Ensure reactivity by forcing Vue to update the view immediately
-    this.favorites = this.favorites.filter(item => item !== null);
+  if (index!== -1) {
+    this.favorites.splice(index, 1);
+    // Update localStorage to reflect the change
+    localStorage.setItem('favorites', JSON.stringify(this.favorites));
   }
 },
-}, 
+
+  },
   created() {
-  console.log('Favorites in created hook:', this.favorites); // Debugging
-  // Fetch favorites from local storage when the component is created
-  const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
-  // Update the injected favorites property with the retrieved favorites
-  storedFavorites.forEach(radio => {
-    this.favorites.push(radio);
-  });
-}
+    this.retrieveFavorites();
+  }
 };
 </script>
 
@@ -104,7 +101,7 @@ removeFromFavorites(radio) {
 .v-card {
   margin-bottom: 20px;
   transition: transform 0.3s ease-in-out;
-  background-color: #444; /* Darker background */
+  background-color: #444;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
@@ -126,4 +123,3 @@ removeFromFavorites(radio) {
   margin-top: 10px;
 }
 </style>
-

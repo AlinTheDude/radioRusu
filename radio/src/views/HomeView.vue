@@ -44,6 +44,8 @@
 <script>
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiPlay, mdiPause, mdiHeart } from '@mdi/js';
+import Hls from 'hls.js';
+
 
 export default {
   name: 'HomeView',
@@ -78,25 +80,42 @@ export default {
         });
     },
     togglePlayRadio(radio, index) {
-      if (this.currentAudio &&!this.currentAudio.paused) {
-        this.currentAudio.pause();
-        this.currentAudio = null;
-        this.currentPlayingUrl = null;
-        this.currentMediaInfoIndex = null;
-      } else {
-        const streamUrl = radio.hls === 1? radio.url : radio.url;
-        this.currentAudio = new Audio(streamUrl);
-        this.currentAudio.play();
-        this.currentPlayingUrl = radio.url;
-        this.currentPlayingRadio = radio; // Ensure this is updated
-        this.currentMediaInfoIndex = index;
-      }
-    },
-    addToFavorites(radio) {
-      radio.favorite = true; // Mark the radio as favorite
-      const favorites = this.radios.filter(r => r.favorite); // Filter only the favorite radios
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-    },
+  if (this.currentAudio && !this.currentAudio.paused) {
+    this.currentAudio.pause();
+    this.currentAudio = null;
+    this.currentPlayingUrl = null;
+    this.currentMediaInfoIndex = null;
+  }
+
+  const streamUrl = radio.hls === 1 ? radio.url : radio.url;
+  if (streamUrl.includes('.m3u8')) {
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(streamUrl);
+      hls.attachMedia(this.$refs.audio);
+      hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+        this.$refs.audio.play();
+      });
+      this.currentAudio = this.$refs.audio;
+    } else {
+      console.error('HLS is not supported in this browser.');
+    }
+  } else {
+    this.currentAudio = new Audio(streamUrl);
+    this.currentAudio.play();
+  }
+  this.currentPlayingUrl = streamUrl;
+  this.currentPlayingRadio = radio; // Ensure this is updated
+  this.currentMediaInfoIndex = index;
+},
+addToFavorites(radio) {
+  radio.favorite = true; // Mark the radio as favorite
+  const existsInFavorites = this.favorites.some(favorite => favorite.stationuuid === radio.stationuuid);
+  if (!existsInFavorites) {
+    this.favorites.push(radio); // Add the radio to favorites if it doesn't already exist
+    localStorage.setItem('favorites', JSON.stringify(this.favorites));
+  }
+},
     togglePlayStop() {
   if (!this.currentAudio.paused) {
     this.currentAudio.pause();
